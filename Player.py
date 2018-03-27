@@ -18,8 +18,6 @@ class Player():
 		self.pointC = (self.x + self.radius*(math.degrees(math.cos(self.theta + (180 + 2*self.angle)))), 
 							self.y + self.radius*(math.degrees(math.sin(self.theta + (180 + 2*self.angle)))))
 
-		print(self.radius)
-
 	def calcDeltaX(self):
 		return self.moveRate*math.degrees(math.cos(self.theta))
 
@@ -61,26 +59,26 @@ class Player():
 			if(keys[pygame.K_DOWN]):
 				deltaX = self.calcDeltaX()
 				deltaY = self.calcDeltaY()
-				self.x = self.x + deltaX
-				self.y = self.y + deltaY
-				self.pointA[0] + deltaX
-				self.pointA[1] + deltaY
-				self.pointB[0] + deltaX
-				self.pointB[1] + deltaY
-				self.pointC[0] + deltaX
-				self.pointC[1] + deltaY
+				self.x += deltaX
+				self.y += deltaY
+				self.pointA[0] += deltaX
+				self.pointA[1] += deltaY
+				self.pointB[0] += deltaX
+				self.pointB[1] += deltaY
+				self.pointC[0] += deltaX
+				self.pointC[1] += deltaY
 			if(keys[pygame.K_UP]):
 				deltaX = self.calcDeltaX()
 				deltaY = self.calcDeltaY()
-				self.x = self.x - deltaX
-				self.y = self.y - deltaY
-				self.pointA[0] - deltaX
-				self.pointA[1] - deltaY
-				self.pointB[0] - deltaX
-				self.pointB[1] - deltaY
-				self.pointC[0] - deltaX
-				self.pointC[1] - deltaY
-				
+				self.x -= deltaX
+				self.y -= deltaY
+				self.pointA[0] -= deltaX
+				self.pointA[1] -= deltaY
+				self.pointB[0] -= deltaX
+				self.pointB[1] -= deltaY
+				self.pointC[0] -= deltaX
+				self.pointC[1] -= deltaY
+
 	# def shoot(self):
 
 	def render(self, screen):
