@@ -5,11 +5,11 @@ class Player():
 	def __init__(self, startX, startY, color, startAngle, playerID):
 		self.x = startX
 		self.y = startY
-		self.rotRate = 1
-		self.moveRate = 1
+		self.rotRate = 0.4
+		self.moveRate = 0.4
 		self.theta = startAngle
-		self.height = 100
-		self.base = 50
+		self.height = 75
+		self.base = 35
 		self.angle = 90 - math.degrees(math.atan(self.height/self.base))
 		self.radius = math.sqrt(math.pow(self.base/2, 2) + math.pow(self.height/2, 2))
 		self.pointA = (self.x + (self.height/2)*math.cos(math.radians(self.theta)), self.y + (self.height/2)*math.sin(math.radians(self.theta)))

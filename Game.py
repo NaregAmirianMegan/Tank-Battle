@@ -94,12 +94,17 @@ def game_loop():
 
 	screen.fill(WHITE)
 
-	Player1 = Player(300, 300, GREEN, 0, 1)
+	Player1 = Player(300, 300, GREEN, 180, 1)
 	#Player2 = Player(100, 300, RED, 180, 2)
+
+	TestBoundary1 = Boundary(100, 100, 200, 100, BLACK)
+
+	TestShell = Shell(400, 400, 0)
 
 	while(run_game):
 		keys = pygame.key.get_pressed()
 		Player1.move(keys)
+		TestShell.move()
 		#Player2.move(keys)
 		for event in pygame.event.get():
 			if(event.type == pygame.QUIT):
@@ -107,6 +112,8 @@ def game_loop():
 				quit()
 		screen.fill(WHITE)
 		Player1.render(screen)
+		TestBoundary1.render(screen)
+		TestShell.render(screen)
 		#Player2.render(screen)
 		pygame.display.update()
 
