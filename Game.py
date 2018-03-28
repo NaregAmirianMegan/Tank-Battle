@@ -55,6 +55,9 @@ def mouse_on_box(xPos, yPos, width, height, mousePosition):
 			return True
 	return False
 
+def explosion_animation(x, y):
+	
+
 def game_menu():
 	run_menu = True
 
@@ -70,14 +73,14 @@ def game_menu():
 				pygame.draw.rect(screen, RED, (WINDOW_WIDTH/4, WINDOW_HEIGHT-WINDOW_HEIGHT/3, 100, 50))
 				pygame.draw.rect(screen, BLACK, (WINDOW_WIDTH-WINDOW_WIDTH/3, WINDOW_HEIGHT-WINDOW_HEIGHT/3, 100, 50))
 				pygame.display.update()
-				pygame.time.wait(20)
+				pygame.time.wait(50)
 				pygame.quit()
 				quit()
 			if(mouse_on_box(WINDOW_WIDTH-WINDOW_WIDTH/3, WINDOW_HEIGHT-WINDOW_HEIGHT/3, 100, 50, pygame.mouse.get_pos())):
 				pygame.draw.rect(screen, BLACK, (WINDOW_WIDTH/4, WINDOW_HEIGHT-WINDOW_HEIGHT/3, 100, 50))
 				pygame.draw.rect(screen, GREEN, (WINDOW_WIDTH-WINDOW_WIDTH/3, WINDOW_HEIGHT-WINDOW_HEIGHT/3, 100, 50))
 				pygame.display.update()
-				pygame.time.wait(20)
+				pygame.time.wait(50)
 				break
 		else:
 			pygame.draw.rect(screen, 
@@ -96,8 +99,12 @@ def game_loop():
 
 	screen.fill(WHITE)
 
+	#setup players 
 	playerArray.append( Player(300, 300, GREEN, 180, 1) )
 	playerArray.append( Player(100, 300, RED, 180, 2) )
+
+	#construct map
+	boundaryArray.append( Boundary((100, 500), (400, 500), BLACK) )
 
 	while(run_game):
 		keys = pygame.key.get_pressed()
@@ -106,6 +113,9 @@ def game_loop():
 
 		for shell in shellArray:
 			shell.move()
+			for player in playerArray:
+				if(shell.checkHit(player)):
+					shellArray.remove(shell)
 
 		playerArray[0].checkCollision(playerArray[1])
 		playerArray[1].checkCollision(playerArray[0])
@@ -120,7 +130,17 @@ def game_loop():
 						shellArray.append(player.shoot(event))
 
 		screen.fill(WHITE)
-		
+
+		for player in playerArray:
+			if(player.health <= 0):
+				playerArray.remove(player)
+				explosion_animation(player.x, player.y)
+				pygame.time.wait(500)
+				run_game = False
+
+		for bound in boundaryArray:
+			bound.render(screen)
+
 		for player in playerArray:
 			player.render(screen)
 

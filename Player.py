@@ -25,11 +25,12 @@ class Player():
 							self.y + self.radius*(math.sin(math.radians(self.theta + 180 + self.angle))))
 		self.color = color
 		self.id = playerID
-		self.sheildRadius = int(self.radius) + 10
+		self.shieldRadius = int(self.radius) + 10
 		self.forward = 0
 		self.collideWithPlayer = False
-		self.sheildHealth = 255
-		self.sheildWidth = 3
+		self.shieldHealth = 250
+		self.shieldWidth = 3
+		self.health = self.shieldHealth + 50
 
 	def calcDeltaX(self):
 		return self.moveRate*math.cos(math.radians(self.theta))
@@ -38,7 +39,7 @@ class Player():
 		return self.moveRate*math.sin(math.radians(self.theta))
 
 	def checkCollision(self, otherPlayer):
-		if(pointDistance((self.x, self.y), (otherPlayer.x, otherPlayer.y)) <= 2*self.sheildRadius):
+		if(pointDistance((self.x, self.y), (otherPlayer.x, otherPlayer.y)) <= 2*self.shieldRadius):
 			self.collideWithPlayer = True
 		else:
 			self.collideWithPlayer = False
@@ -62,8 +63,9 @@ class Player():
 				self.updatePoints()
 			if(keys[pygame.K_w]):
 				if(self.forward == 1 and self.collideWithPlayer == True):
-					if(self.sheildHealth != 0):
-						self.sheildHealth -= 1
+					if(self.shieldHealth != 0):
+						self.shieldHealth -= 1
+						self.health -= 1
 					self.x = self.x - self.calcDeltaX()
 					self.y = self.y - self.calcDeltaY()
 				else:
@@ -73,8 +75,9 @@ class Player():
 				self.updatePoints()
 			if(keys[pygame.K_s]):
 				if(self.forward == -1 and self.collideWithPlayer == True):
-					if(self.sheildHealth != 0):
-						self.sheildHealth -= 1
+					if(self.shieldHealth != 0):
+						self.shieldHealth -= 1
+						self.health -= 1
 					self.x = self.x + self.calcDeltaX()
 					self.y = self.y + self.calcDeltaY()
 				else:
@@ -91,8 +94,9 @@ class Player():
 				self.updatePoints()
 			if(keys[pygame.K_UP]):
 				if(self.forward == 1 and self.collideWithPlayer == True):
-					if(self.sheildHealth != 0):
-						self.sheildHealth -= 1
+					if(self.shieldHealth != 0):
+						self.shieldHealth -= 1
+						self.health -= 1
 					self.x = self.x - self.calcDeltaX()
 					self.y = self.y - self.calcDeltaY()
 				else:
@@ -102,8 +106,9 @@ class Player():
 				self.updatePoints()
 			if(keys[pygame.K_DOWN]):
 				if(self.forward == -1 and self.collideWithPlayer == True):
-					if(self.sheildHealth != 0):
-						self.sheildHealth -= 1
+					if(self.shieldHealth != 0):
+						self.shieldHealth -= 1
+						self.health -= 1
 					self.x = self.x + self.calcDeltaX()
 					self.y = self.y + self.calcDeltaY()
 				else:
@@ -122,8 +127,8 @@ class Player():
 
 	def render(self, screen):
 		pygame.draw.polygon(screen, self.color, (self.pointA, self.pointB, self.pointC))
-		if(self.sheildHealth != 0):
-			self.renderSheild(screen)
+		if(self.shieldHealth != 0):
+			self.renderShield(screen)
 		
-	def renderSheild(self, screen):
-		pygame.draw.circle(screen, (0, 255 - self.sheildHealth, 255), (int(self.x), int(self.y)), self.sheildRadius, self.sheildWidth)
+	def renderShield(self, screen):
+		pygame.draw.circle(screen, (0, (250 - self.shieldHealth), 255), (int(self.x), int(self.y)), self.shieldRadius, self.shieldWidth)
