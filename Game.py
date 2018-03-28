@@ -7,6 +7,7 @@ from Shell import Shell
 import pygame, os
 from pygame.locals import *
 from random import randint
+import math
 
 print("Game loading...")
 
@@ -95,26 +96,27 @@ def game_loop():
 	screen.fill(WHITE)
 
 	Player1 = Player(300, 300, GREEN, 180, 1)
-	#Player2 = Player(100, 300, RED, 180, 2)
-
-	TestBoundary1 = Boundary(100, 100, 200, 100, BLACK)
-
-	TestShell = Shell(400, 400, 0)
+	Player2 = Player(100, 300, RED, 180, 2)
 
 	while(run_game):
 		keys = pygame.key.get_pressed()
 		Player1.move(keys)
-		TestShell.move()
-		#Player2.move(keys)
+		Player2.move(keys)
+
+		Player1.checkCollision(Player2)
+		Player2.checkCollision(Player1)
+
 		for event in pygame.event.get():
 			if(event.type == pygame.QUIT):
 				pygame.quit()
 				quit()
+
 		screen.fill(WHITE)
 		Player1.render(screen)
-		TestBoundary1.render(screen)
-		TestShell.render(screen)
-		#Player2.render(screen)
+		Player2.render(screen)
+
+
+
 		pygame.display.update()
 
 game_menu()
