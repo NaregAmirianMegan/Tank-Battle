@@ -1,4 +1,5 @@
 import pygame, math
+from Shell import Shell
 
 def pointDistance(a, b):
 		deltaX = b[0] - a[0]
@@ -10,8 +11,8 @@ class Player():
 	def __init__(self, startX, startY, color, startAngle, playerID):
 		self.x = startX
 		self.y = startY
-		self.rotRate = 0.4
-		self.moveRate = 0.4
+		self.rotRate = 0.3
+		self.moveRate = 0.2
 		self.theta = startAngle
 		self.height = 35
 		self.base = 15
@@ -27,6 +28,8 @@ class Player():
 		self.sheildRadius = int(self.radius) + 10
 		self.forward = 0
 		self.collideWithPlayer = False
+		self.sheildHealth = 255
+		self.sheildWidth = 3
 
 	def calcDeltaX(self):
 		return self.moveRate*math.cos(math.radians(self.theta))
@@ -59,6 +62,8 @@ class Player():
 				self.updatePoints()
 			if(keys[pygame.K_w]):
 				if(self.forward == 1 and self.collideWithPlayer == True):
+					if(self.sheildHealth != 0):
+						self.sheildHealth -= 1
 					self.x = self.x - self.calcDeltaX()
 					self.y = self.y - self.calcDeltaY()
 				else:
@@ -68,6 +73,8 @@ class Player():
 				self.updatePoints()
 			if(keys[pygame.K_s]):
 				if(self.forward == -1 and self.collideWithPlayer == True):
+					if(self.sheildHealth != 0):
+						self.sheildHealth -= 1
 					self.x = self.x + self.calcDeltaX()
 					self.y = self.y + self.calcDeltaY()
 				else:
@@ -84,6 +91,8 @@ class Player():
 				self.updatePoints()
 			if(keys[pygame.K_UP]):
 				if(self.forward == 1 and self.collideWithPlayer == True):
+					if(self.sheildHealth != 0):
+						self.sheildHealth -= 1
 					self.x = self.x - self.calcDeltaX()
 					self.y = self.y - self.calcDeltaY()
 				else:
@@ -93,6 +102,8 @@ class Player():
 				self.updatePoints()
 			if(keys[pygame.K_DOWN]):
 				if(self.forward == -1 and self.collideWithPlayer == True):
+					if(self.sheildHealth != 0):
+						self.sheildHealth -= 1
 					self.x = self.x + self.calcDeltaX()
 					self.y = self.y + self.calcDeltaY()
 				else:
@@ -101,8 +112,18 @@ class Player():
 				self.forward = -1
 				self.updatePoints()
 
-	# def shoot(self):
+	def shoot(self, event):
+		if(self.id == 1):
+			if(event.key == pygame.K_SPACE):
+				return Shell(self.pointA[0], self.pointA[1], self.theta)
+		elif(self.id == 2):
+			if(event.key == pygame.K_KP_ENTER):
+				return Shell(self.pointA[0], self.pointA[1], self.theta)
 
 	def render(self, screen):
 		pygame.draw.polygon(screen, self.color, (self.pointA, self.pointB, self.pointC))
-		pygame.draw.circle(screen, (0, 50, 255), (int(self.x), int(self.y)), self.sheildRadius, 3)
+		if(self.sheildHealth != 0):
+			self.renderSheild(screen)
+		
+	def renderSheild(self, screen):
+		pygame.draw.circle(screen, (0, 255 - self.sheildHealth, 255), (int(self.x), int(self.y)), self.sheildRadius, self.sheildWidth)

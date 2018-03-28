@@ -44,6 +44,7 @@ clock = pygame.time.Clock()
 # Player2 = Player(0, 0)
 shellArray = []
 boundaryArray = []
+playerArray = []
 title = myfont.render('Tank Battle', False, BLACK)
 quitLabel = myfont.render('QUIT', False, WHITE)
 startLabel = myfont.render('START', False, WHITE)
@@ -95,27 +96,36 @@ def game_loop():
 
 	screen.fill(WHITE)
 
-	Player1 = Player(300, 300, GREEN, 180, 1)
-	Player2 = Player(100, 300, RED, 180, 2)
+	playerArray.append( Player(300, 300, GREEN, 180, 1) )
+	playerArray.append( Player(100, 300, RED, 180, 2) )
 
 	while(run_game):
 		keys = pygame.key.get_pressed()
-		Player1.move(keys)
-		Player2.move(keys)
+		for player in playerArray:
+			player.move(keys)
 
-		Player1.checkCollision(Player2)
-		Player2.checkCollision(Player1)
+		for shell in shellArray:
+			shell.move()
+
+		playerArray[0].checkCollision(playerArray[1])
+		playerArray[1].checkCollision(playerArray[0])
 
 		for event in pygame.event.get():
 			if(event.type == pygame.QUIT):
 				pygame.quit()
 				quit()
+			elif(event.type == pygame.KEYDOWN):
+				for player in playerArray:
+					if(player.shoot(event) != None): 
+						shellArray.append(player.shoot(event))
 
 		screen.fill(WHITE)
-		Player1.render(screen)
-		Player2.render(screen)
+		
+		for player in playerArray:
+			player.render(screen)
 
-
+		for shell in shellArray:
+			shell.render(screen)
 
 		pygame.display.update()
 
