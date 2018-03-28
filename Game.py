@@ -94,13 +94,13 @@ def game_loop():
 
 	screen.fill(WHITE)
 
-	Player1 = Player(300, 300)
-	#Player2 = Player(100, 100)
+	Player1 = Player(300, 300, GREEN, 0, 1)
+	#Player2 = Player(100, 300, RED, 180, 2)
 
 	while(run_game):
 		keys = pygame.key.get_pressed()
-		Player1.move(keys, 1)
-		#Player2.move(keys, 2)
+		Player1.move(keys)
+		#Player2.move(keys)
 		for event in pygame.event.get():
 			if(event.type == pygame.QUIT):
 				pygame.quit()
