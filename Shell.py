@@ -101,7 +101,7 @@ class Shell():
 				print(self.theta)
 				self.calcVerticalDeflectionAngle()
 				print('hit vertical', self.theta)
-		elif(boundary.a[1] == boundary.b[1]): 
+		if(boundary.a[1] == boundary.b[1]): 
 			if(boundary.a[0] > boundary.b[0]):
 				greaterX = boundary.a[0]
 				lesserX = boundary.b[0] 
