@@ -53,8 +53,33 @@ def mouse_on_box(xPos, yPos, width, height, mousePosition):
 			return True
 	return False
 
-#def explosion_animation(x, y):
+def explosion_animation(x, y, screen, boundaryArray, playerArray, shellArray):
+	run_animation = True
+	imgSequence = []
+	frameCount = 0
 
+	for img in os.listdir('./images'):
+		imgSequence.append(pygame.image.load(os.path.join('./images', img)).convert())
+
+	while(run_animation):
+		if(frameCount%30 == 0):
+			screen.blit(imgSequence[int(frameCount/30)], (x, y))
+
+		for bound in boundaryArray:
+			bound.render(screen)
+
+		for player in playerArray:
+			player.render(screen)
+
+		for shell in shellArray:
+			shell.render(screen)
+
+		pygame.display.update()
+
+		if(frameCount/30 == len(imgSequence)-1):
+			run_animation = False
+
+		frameCount += 1
 
 def game_menu():
 	run_menu = True
@@ -103,6 +128,8 @@ def game_loop():
 
 	#construct map
 	boundaryArray.append( Boundary((100, 500), (400, 500), BLACK) )
+	boundaryArray.append( Boundary((100, 100), (400, 100), BLACK) )
+	boundaryArray.append( Boundary((700, 100), (700, 400), BLACK) )
 
 	while(run_game):
 		keys = pygame.key.get_pressed()
@@ -138,7 +165,7 @@ def game_loop():
 		for player in playerArray:
 			if(player.health <= 0):
 				playerArray.remove(player)
-				#explosion_animation(player.x, player.y)
+				explosion_animation(player.x, player.y, screen, boundaryArray, playerArray, shellArray)
 				pygame.time.wait(500)
 				run_game = False
 

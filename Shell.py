@@ -24,12 +24,24 @@ class Shell():
 		return self.moveRate*math.sin(math.radians(self.theta))
 
 	def calcVerticalDeflectionAngle(self):
-		self.theta = 180 - self.theta
+		if(self.theta < 0):
+			posTheta = self.theta + 360
+		else:
+			posTheta = self.theta
+
+		if(self.theta == 270):
+			self.theta = 90
+		elif(self.theta == 90):
+			self.theta = 270
+		elif(180 >= self.theta >= 0):
+			self.theta = 180 - self.theta
+		elif(360 >= self.theta > 180):
+			self.theta = 540 - self.theta
 
 	def calcHorizontalDeflectionAngle(self):
 		if(self.theta == 0):
 			self.theta = 180
-		elif(self.theta == 180):
+		elif(self.theta == 180 or self.theta == -180):
 			self.theta = 0
 		elif(self.theta > 0):
 			self.theta = self.theta * -1
