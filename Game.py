@@ -123,8 +123,8 @@ def game_loop():
 	screen.fill(WHITE)
 
 	#setup players 
-	playerArray.append( Player(300, 300, GREEN, 180, 1) )
-	playerArray.append( Player(100, 300, RED, 180, 2) )
+	playerArray.append( Player(300, 300, GREEN, 0, 1) )
+	playerArray.append( Player(100, 300, RED, 0, 2) )
 
 	#construct map
 	boundaryArray.append( Boundary((100, 500), (400, 500), BLACK) )

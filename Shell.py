@@ -26,18 +26,20 @@ class Shell():
 	def calcVerticalDeflectionAngle(self):
 		if(self.theta < 0):
 			posTheta = self.theta + 360
+			print('theta: ', self.theta, 'posTheta: ', posTheta)
 		else:
 			posTheta = self.theta
 
-		if(self.theta == 270):
+		if(posTheta == 270):
 			self.theta = 90
-		elif(self.theta == 90):
+		elif(posTheta == 90):
 			self.theta = 270
-		elif(180 >= self.theta >= 0):
-			self.theta = 180 - self.theta
-		elif(360 >= self.theta > 180):
-			self.theta = 540 - self.theta
-
+		elif(180 >= posTheta >= 0):
+			self.theta = 180 - posTheta
+		elif(360 >= posTheta > 180):
+			self.theta = 540 - posTheta
+			print('self.theta:', self.theta)
+			
 	def calcHorizontalDeflectionAngle(self):
 		if(self.theta == 0):
 			self.theta = 180
@@ -98,10 +100,8 @@ class Shell():
 				lesserY = boundary.a[1]
 				greaterY = boundary.b[1]
 			if(int(self.xPos) == boundary.a[0] and greaterY >= self.yPos >= lesserY):
-				print(self.theta)
 				self.calcVerticalDeflectionAngle()
-				print('hit vertical', self.theta)
-		if(boundary.a[1] == boundary.b[1]): 
+		elif(boundary.a[1] == boundary.b[1]): 
 			if(boundary.a[0] > boundary.b[0]):
 				greaterX = boundary.a[0]
 				lesserX = boundary.b[0] 
@@ -109,9 +109,7 @@ class Shell():
 				lesserX = boundary.a[0]
 				greaterX = boundary.b[0]
 			if(int(self.yPos) == boundary.a[1] and greaterX >= self.xPos >= lesserX):
-				print(180 - abs(180 - self.theta))
 				self.calcHorizontalDeflectionAngle()
-				print('hit horizontal', self.theta)
 
 	def move(self):
 		self.delay -= 0.1
