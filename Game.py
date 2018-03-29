@@ -40,8 +40,6 @@ pygame.display.set_caption('Game Window')
 clock = pygame.time.Clock()
 
 #setup global variables for the program
-# Player1 = Player(0, 0)
-# Player2 = Player(0, 0)
 shellArray = []
 boundaryArray = []
 playerArray = []
@@ -55,8 +53,8 @@ def mouse_on_box(xPos, yPos, width, height, mousePosition):
 			return True
 	return False
 
-def explosion_animation(x, y):
-	
+#def explosion_animation(x, y):
+
 
 def game_menu():
 	run_menu = True
@@ -120,6 +118,12 @@ def game_loop():
 		playerArray[0].checkCollision(playerArray[1])
 		playerArray[1].checkCollision(playerArray[0])
 
+		for boundary in boundaryArray:
+			for player in playerArray:
+				player.detectCollision(boundary)
+			for shell in shellArray:
+				shell.checkBounce(boundary)
+
 		for event in pygame.event.get():
 			if(event.type == pygame.QUIT):
 				pygame.quit()
@@ -134,7 +138,7 @@ def game_loop():
 		for player in playerArray:
 			if(player.health <= 0):
 				playerArray.remove(player)
-				explosion_animation(player.x, player.y)
+				#explosion_animation(player.x, player.y)
 				pygame.time.wait(500)
 				run_game = False
 

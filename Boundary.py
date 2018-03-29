@@ -8,4 +8,4 @@ class Boundary():
 		self.color = color
 
 	def render(self, screen):
-		line(screen, self.color, self.a, self.b, 2)
+		line(screen, self.color, self.a, self.b, 3)

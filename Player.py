@@ -26,8 +26,9 @@ class Player():
 		self.color = color
 		self.id = playerID
 		self.shieldRadius = int(self.radius) + 10
-		self.forward = 0
+		self.direction = 0
 		self.collideWithPlayer = False
+		self.collideWithWall = False
 		self.shieldHealth = 250
 		self.shieldWidth = 3
 		self.health = self.shieldHealth + 50
@@ -56,13 +57,22 @@ class Player():
 				self.theta = 0
 		if(self.id == 1):
 			if(keys[pygame.K_a]):
-				self.theta = self.theta - self.rotRate
+				if(not self.collideWithWall):
+					self.theta -= self.rotRate
+				else:
+					self.theta += self.theta/10
 				self.updatePoints()
 			if(keys[pygame.K_d]):
-				self.theta = self.theta + self.rotRate
+				if(not self.collideWithWall):
+					self.theta += self.rotRate
+				else:
+					self.theta -= self.theta/10
 				self.updatePoints()
 			if(keys[pygame.K_w]):
-				if(self.forward == 1 and self.collideWithPlayer == True):
+				if(self.direction == 1 and self.collideWithWall == True):
+					self.x = self.x - self.calcDeltaX()
+					self.y = self.y - self.calcDeltaY()
+				if(self.direction == 1 and self.collideWithPlayer == True):
 					if(self.shieldHealth != 0):
 						self.shieldHealth -= 1
 						self.health -= 1
@@ -71,10 +81,13 @@ class Player():
 				else:
 					self.x = self.x + self.calcDeltaX()
 					self.y = self.y + self.calcDeltaY()
-				self.forward = 1
+				self.direction = 1
 				self.updatePoints()
 			if(keys[pygame.K_s]):
-				if(self.forward == -1 and self.collideWithPlayer == True):
+				if(self.direction == -1 and self.collideWithWall == True):
+					self.x = self.x + self.calcDeltaX()
+					self.y = self.y + self.calcDeltaY()
+				if(self.direction == -1 and self.collideWithPlayer == True):
 					if(self.shieldHealth != 0):
 						self.shieldHealth -= 1
 						self.health -= 1
@@ -83,17 +96,26 @@ class Player():
 				else:
 					self.x = self.x - self.calcDeltaX()
 					self.y = self.y - self.calcDeltaY()
-				self.forward = -1
+				self.direction = -1
 				self.updatePoints()
 		elif(self.id == 2):
 			if(keys[pygame.K_LEFT]):
-				self.theta = self.theta - self.rotRate
+				if(not self.collideWithWall):
+					self.theta -= self.rotRate
+				else:
+					self.theta += self.theta/10
 				self.updatePoints()
 			if(keys[pygame.K_RIGHT]):
-				self.theta = self.theta + self.rotRate
+				if(not self.collideWithWall):
+					self.theta += self.rotRate
+				else:
+					self.theta -= self.theta/10
 				self.updatePoints()
 			if(keys[pygame.K_UP]):
-				if(self.forward == 1 and self.collideWithPlayer == True):
+				if(self.direction == 1 and self.collideWithWall == True):
+					self.x = self.x - self.calcDeltaX()
+					self.y = self.y - self.calcDeltaY()
+				if(self.direction == 1 and self.collideWithPlayer == True):
 					if(self.shieldHealth != 0):
 						self.shieldHealth -= 1
 						self.health -= 1
@@ -102,10 +124,13 @@ class Player():
 				else:
 					self.x = self.x + self.calcDeltaX()
 					self.y = self.y + self.calcDeltaY()
-				self.forward = 1
+				self.direction = 1
 				self.updatePoints()
 			if(keys[pygame.K_DOWN]):
-				if(self.forward == -1 and self.collideWithPlayer == True):
+				if(self.direction == -1 and self.collideWithWall == True):
+					self.x = self.x + self.calcDeltaX()
+					self.y = self.y + self.calcDeltaY()
+				if(self.direction == -1 and self.collideWithPlayer == True):
 					if(self.shieldHealth != 0):
 						self.shieldHealth -= 1
 						self.health -= 1
@@ -114,8 +139,77 @@ class Player():
 				else:
 					self.x = self.x - self.calcDeltaX()
 					self.y = self.y - self.calcDeltaY()
-				self.forward = -1
+				self.direction = -1
 				self.updatePoints()
+
+	def getHighestPoint(self):
+		y1 = self.pointA[1]
+		y2 = self.pointB[1]
+		y3 = self.pointC[1]
+		pointList = []
+		pointList.append(y1)
+		pointList.append(y2)
+		pointList.append(y3)
+		return max(pointList)
+
+	def getLowestPoint(self):
+		y1 = self.pointA[1]
+		y2 = self.pointB[1]
+		y3 = self.pointC[1]
+		pointList = []
+		pointList.append(y1)
+		pointList.append(y2)
+		pointList.append(y3)
+		return min(pointList)
+
+	def getLeftmostPoint(self):
+		x1 = self.pointA[0]
+		x2 = self.pointB[0]
+		x3 = self.pointC[0]
+		pointList = []
+		pointList.append(x1)
+		pointList.append(x2)
+		pointList.append(x3)
+		return max(pointList)
+
+	def getRightmostPoint(self):
+		x1 = self.pointA[0]
+		x2 = self.pointB[0]
+		x3 = self.pointC[0]
+		pointList = []
+		pointList.append(x1)
+		pointList.append(x2)
+		pointList.append(x3)
+		return min(pointList)
+
+	def detectCollision(self, boundary):
+		rightmostBound = self.getRightmostPoint()
+		leftmostBound = self.getLeftmostPoint()
+		upperBound = self.getHighestPoint()
+		lowerBound = self.getLowestPoint()
+
+		if(boundary.a[0] == boundary.b[0]): 
+			if(boundary.a[1] > boundary.b[1]):
+				greaterY = boundary.a[1]
+				lesserY = boundary.b[1]
+			else:
+				lesserY = boundary.a[1]
+				greaterY = boundary.b[1]
+			if(rightmostBound >= boundary.a[0] >= leftmostBound and (lowerBound < greaterY or upperBound > lesserY)):
+				self.collideWithWall = True
+			else:
+				self.collideWithWall = False
+		elif(boundary.a[1] == boundary.b[1]): 
+			if(boundary.a[0] > boundary.b[0]):
+				greaterX = boundary.a[0]
+				lesserX = boundary.b[0] 
+			else:
+				lesserX = boundary.a[0]
+				greaterX = boundary.b[0]
+			if(upperBound >= boundary.a[1] >= lowerBound and (leftmostBound < greaterX or rightmostBound > lesserX)):
+				self.collideWithWall = True
+			else:
+				self.collideWithWall = False
 
 	def shoot(self, event):
 		if(self.id == 1):
