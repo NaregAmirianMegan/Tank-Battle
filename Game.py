@@ -1,57 +1,10 @@
-#import external files
-from Player import Player
-from Boundary import Boundary
-from Shell import Shell
-
-#import pygame and system
 import pygame, os
-from pygame.locals import *
-from random import randint
-import math
 
-print("Game loading...")
-
-#set window position
-x = 500
-y = 100
-os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (x,y)
-
-#setup pygame
-pygame.init()
-#setup text font
-pygame.font.init()
-myfont = pygame.font.SysFont('Comic Sans MS', 29)
-
-#set game constants
-#set window size
-WINDOW_HEIGHT = 600
-WINDOW_WIDTH = 800
-
-#colors
 WHITE = (255,255,255)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLACK = (0, 0, 0)
 GREY = (211, 211, 211)
-
-#create pygame display and frame clock
-screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-pygame.display.set_caption('Game Window')
-clock = pygame.time.Clock()
-
-#setup global variables for the program
-shellArray = []
-boundaryArray = []
-playerArray = []
-title = myfont.render('Tank Battle', False, BLACK)
-quitLabel = myfont.render('QUIT', False, WHITE)
-startLabel = myfont.render('START', False, WHITE)
-
-def mouse_on_box(xPos, yPos, width, height, mousePosition):
-	if(mousePosition[0] > xPos and mousePosition[0] < xPos+width):
-		if(mousePosition[1] > yPos and mousePosition[1] < yPos+height):
-			return True
-	return False
 
 def explosion_animation(x, y, screen, boundaryArray, playerArray, shellArray):
 	run_animation = True
@@ -81,114 +34,96 @@ def explosion_animation(x, y, screen, boundaryArray, playerArray, shellArray):
 
 		frameCount += 1
 
-def game_menu():
-	run_menu = True
-
-	while(run_menu):
-		for event in pygame.event.get():
-			if(event.type == pygame.QUIT):
-				pygame.quit()
-				quit()
-
-		screen.fill(GREY)
-		if(pygame.mouse.get_pressed()[0] == True):
-			if(mouse_on_box(WINDOW_WIDTH/4, WINDOW_HEIGHT-WINDOW_HEIGHT/3, 100, 50, pygame.mouse.get_pos())):
-				pygame.draw.rect(screen, RED, (WINDOW_WIDTH/4, WINDOW_HEIGHT-WINDOW_HEIGHT/3, 100, 50))
-				pygame.draw.rect(screen, BLACK, (WINDOW_WIDTH-WINDOW_WIDTH/3, WINDOW_HEIGHT-WINDOW_HEIGHT/3, 100, 50))
-				pygame.display.update()
-				pygame.time.wait(50)
-				pygame.quit()
-				quit()
-			if(mouse_on_box(WINDOW_WIDTH-WINDOW_WIDTH/3, WINDOW_HEIGHT-WINDOW_HEIGHT/3, 100, 50, pygame.mouse.get_pos())):
-				pygame.draw.rect(screen, BLACK, (WINDOW_WIDTH/4, WINDOW_HEIGHT-WINDOW_HEIGHT/3, 100, 50))
-				pygame.draw.rect(screen, GREEN, (WINDOW_WIDTH-WINDOW_WIDTH/3, WINDOW_HEIGHT-WINDOW_HEIGHT/3, 100, 50))
-				pygame.display.update()
-				pygame.time.wait(50)
-				break
-		else:
-			pygame.draw.rect(screen, 
-				BLACK, (WINDOW_WIDTH/4, WINDOW_HEIGHT-WINDOW_HEIGHT/3, 100, 50))
-			pygame.draw.rect(screen, 
-				BLACK, (WINDOW_WIDTH-WINDOW_WIDTH/3, 
-					WINDOW_HEIGHT-WINDOW_HEIGHT/3, 100, 50))
-		screen.blit(title, (WINDOW_WIDTH/3+55, WINDOW_HEIGHT/3))
-		screen.blit(quitLabel, (WINDOW_WIDTH/4, WINDOW_HEIGHT-WINDOW_HEIGHT/3))
-		screen.blit(startLabel, (WINDOW_WIDTH-WINDOW_WIDTH/3, WINDOW_HEIGHT-WINDOW_HEIGHT/3))	
-		pygame.display.update()
-		clock.tick(15)
-
-def game_loop():
+def end_screen(winner, screen):
 	run_game = True
 
-	screen.fill(WHITE)
+	pygame.font.init()
+	myfont = pygame.font.SysFont('Comic Sans MS', 29)
 
-	#setup players 
-	playerArray.append( Player(300, 300, GREEN, 0, 1) )
-	playerArray.append( Player(100, 300, RED, 0, 2) )
-
-	#construct map
-	boundaryArray.append( Boundary((0, 0), (0, WINDOW_HEIGHT), BLACK) )
-	boundaryArray.append( Boundary((0, 0), (WINDOW_WIDTH, 0), BLACK) )
-	boundaryArray.append( Boundary((0, WINDOW_HEIGHT), (WINDOW_WIDTH, WINDOW_HEIGHT), BLACK) )
-	boundaryArray.append( Boundary((WINDOW_WIDTH, 0), (WINDOW_WIDTH, WINDOW_HEIGHT), BLACK) )
-	boundaryArray.append( Boundary((WINDOW_WIDTH/2, 0), (WINDOW_WIDTH/2, WINDOW_HEIGHT/2), BLACK) )
-
-	
+	endMatchText = ('PLAYER '+str(winner)+' WINS!!!')
+	endMatch = myfont.render(endMatchText, False, RED)
 
 	while(run_game):
-		keys = pygame.key.get_pressed()
-
-		for player in playerArray:
-			player.move(keys)
-			for boundary in boundaryArray:
-				player.detectCollision(boundary)
-				if(player.collideWithWall):
-					break
-
-		for shell in shellArray:
-			shell.move()
-			if(shell.lifeTime == 0):
-				shellArray.remove(shell)
-			for player in playerArray:
-				if(shell.checkHit(player)):
-					shellArray.remove(shell)
-
-		playerArray[0].checkCollision(playerArray[1])
-		playerArray[1].checkCollision(playerArray[0])
-			
-		for boundary in boundaryArray:
-			for shell in shellArray:
-				shell.checkBounce(boundary)
 
 		for event in pygame.event.get():
 			if(event.type == pygame.QUIT):
 				pygame.quit()
 				quit()
-			elif(event.type == pygame.KEYDOWN):
-				for player in playerArray:
-					if(player.shoot(event) != None): 
-						shellArray.append(player.shoot(event))
 
-		screen.fill(WHITE)
-
-		for player in playerArray:
-			if(player.health <= 0):
-				playerArray.remove(player)
-				explosion_animation(player.x, player.y, screen, boundaryArray, playerArray, shellArray)
-				pygame.time.wait(500)
-				run_game = False
-
-		for bound in boundaryArray:
-			bound.render(screen)
-
-		for player in playerArray:
-			player.render(screen)
-
-		for shell in shellArray:
-			shell.render(screen)
-
+		screen.fill(BLACK)
+		screen.blit(endMatch, (300, 300))
 		pygame.display.update()
 
-game_menu()
-print("Game loaded.")
-game_loop()
+
+class Game:
+
+	def __init__(self, boundaryArray, playerArray, screen):
+		self.boundaries = boundaryArray
+		self.shells = []
+		self.players = playerArray
+		self.screen = screen
+
+	def run(self):
+		run_game = True
+
+		self.screen.fill(WHITE)
+
+		while(run_game):
+			keys = pygame.key.get_pressed()
+
+			for player in self.players:
+				player.move(keys)
+				for boundary in self.boundaries:
+					player.detectCollision(boundary)
+					if(player.collideWithWall):
+						break
+
+			for shell in self.shells:
+				shell.move()
+				if(shell.lifeTime == 0):
+					self.shells.remove(shell)
+				for player in self.players:
+					if(shell.checkHit(player)):
+						self.shells.remove(shell)
+
+			self.players[0].checkCollision(self.players[1])
+			self.players[1].checkCollision(self.players[0])
+				
+			for boundary in self.boundaries:
+				for shell in self.shells:
+					shell.checkBounce(boundary)
+
+			for event in pygame.event.get():
+				if(event.type == pygame.QUIT):
+					pygame.quit()
+					quit()
+				elif(event.type == pygame.KEYDOWN):
+					for player in self.players:
+						if(player.shoot(event) != None): 
+							self.shells.append(player.shoot(event))
+
+			self.screen.fill(WHITE)
+
+			for player in self.players:
+				if(player.health <= 0):
+					if(player.id == 1):
+						winner = 2
+					else:
+						winner = 1
+					self.players.remove(player)
+					explosion_animation(player.x, player.y, self.screen, self.boundaries, self.players, self.shells)
+					pygame.time.wait(500)
+					run_game = False
+
+			for boundary in self.boundaries:
+				boundary.render(self.screen)
+
+			for player in self.players:
+				player.render(self.screen)
+
+			for shell in self.shells:
+				shell.render(self.screen)
+
+			pygame.display.update()
+
+		end_screen(winner, self.screen)
