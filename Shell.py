@@ -26,7 +26,6 @@ class Shell():
 	def calcVerticalDeflectionAngle(self):
 		if(self.theta < 0):
 			posTheta = self.theta + 360
-			print('theta: ', self.theta, 'posTheta: ', posTheta)
 		else:
 			posTheta = self.theta
 
@@ -38,7 +37,6 @@ class Shell():
 			self.theta = 180 - posTheta
 		elif(360 >= posTheta > 180):
 			self.theta = 540 - posTheta
-			print('self.theta:', self.theta)
 			
 	def calcHorizontalDeflectionAngle(self):
 		if(self.theta == 0):

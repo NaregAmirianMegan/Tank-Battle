@@ -127,9 +127,10 @@ def game_loop():
 	playerArray.append( Player(100, 300, RED, 0, 2) )
 
 	#construct map
+	boundaryArray.append( Boundary((700, 100), (700, 400), BLACK) )
 	boundaryArray.append( Boundary((100, 500), (400, 500), BLACK) )
 	boundaryArray.append( Boundary((100, 100), (400, 100), BLACK) )
-	boundaryArray.append( Boundary((700, 100), (700, 400), BLACK) )
+	
 
 	while(run_game):
 		keys = pygame.key.get_pressed()
@@ -145,9 +146,14 @@ def game_loop():
 		playerArray[0].checkCollision(playerArray[1])
 		playerArray[1].checkCollision(playerArray[0])
 
-		for boundary in boundaryArray:
-			for player in playerArray:
+		#TODO: fix boundary collision condition bug
+
+		for player in playerArray:
+			for boundary in boundaryArray:
 				player.detectCollision(boundary)
+				if(player.collideWithWall):
+					break
+		for boundary in boundaryArray:
 			for shell in shellArray:
 				shell.checkBounce(boundary)
 

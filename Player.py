@@ -62,12 +62,14 @@ class Player():
 				else:
 					self.theta += self.theta/10
 				self.updatePoints()
+				self.collideWithWall = False
 			if(keys[pygame.K_d]):
 				if(not self.collideWithWall):
 					self.theta += self.rotRate
 				else:
 					self.theta -= self.theta/10
 				self.updatePoints()
+				self.collideWithWall = False
 			if(keys[pygame.K_w]):
 				if(self.direction == 1 and self.collideWithWall == True):
 					self.x = self.x - self.calcDeltaX()
@@ -83,6 +85,7 @@ class Player():
 					self.y = self.y + self.calcDeltaY()
 				self.direction = 1
 				self.updatePoints()
+				self.collideWithWall = False
 			if(keys[pygame.K_s]):
 				if(self.direction == -1 and self.collideWithWall == True):
 					self.x = self.x + self.calcDeltaX()
@@ -98,6 +101,7 @@ class Player():
 					self.y = self.y - self.calcDeltaY()
 				self.direction = -1
 				self.updatePoints()
+				self.collideWithWall = False
 		elif(self.id == 2):
 			if(keys[pygame.K_LEFT]):
 				if(not self.collideWithWall):
@@ -183,31 +187,25 @@ class Player():
 		return min(pointList)
 
 	def detectCollision(self, boundary):
-		rightmostBound = self.getRightmostPoint()
-		leftmostBound = self.getLeftmostPoint()
-		upperBound = self.getHighestPoint()
-		lowerBound = self.getLowestPoint()
+		rightmost = self.getRightmostPoint()
+		leftmost = self.getLeftmostPoint()
+		high = self.getHighestPoint()
+		low = self.getLowestPoint()
 
-		if(boundary.a[0] == boundary.b[0]): 
-			if(boundary.a[1] > boundary.b[1]):
-				greaterY = boundary.a[1]
-				lesserY = boundary.b[1]
-			else:
-				lesserY = boundary.a[1]
-				greaterY = boundary.b[1]
-			if(rightmostBound >= boundary.a[0] >= leftmostBound and (lowerBound < greaterY or upperBound > lesserY)):
-				self.collideWithWall = True
+		if(boundary.isHorizontal):
+			if(rightmost >= boundary.xMin and boundary.xMax >= leftmost):
+				if(high >= boundary.yVal >= low):
+					self.collideWithWall = True
+				else:
+					self.collideWithWall = False
 			else:
 				self.collideWithWall = False
-		elif(boundary.a[1] == boundary.b[1]): 
-			if(boundary.a[0] > boundary.b[0]):
-				greaterX = boundary.a[0]
-				lesserX = boundary.b[0] 
-			else:
-				lesserX = boundary.a[0]
-				greaterX = boundary.b[0]
-			if(upperBound >= boundary.a[1] >= lowerBound and (leftmostBound < greaterX or rightmostBound > lesserX)):
-				self.collideWithWall = True
+		else:
+			if(high >= boundary.yMin and boundary.yMax >= low):
+				if(leftmost >= boundary.xVal >= rightmost):
+					self.collideWithWall = True
+				else:
+					self.collideWithWall = False
 			else:
 				self.collideWithWall = False
 
