@@ -30,8 +30,8 @@ class Player():
 		self.collideWithPlayer = False
 		self.collideWithWall = False
 		self.shieldHealth = 250
-		self.shieldWidth = 3
 		self.health = self.shieldHealth + 50
+		self.shotDelay = 0
 
 	def calcDeltaX(self):
 		return self.moveRate*math.cos(math.radians(self.theta))
@@ -53,6 +53,7 @@ class Player():
 							self.y + self.radius*(math.sin(math.radians(self.theta + 180 + self.angle))))
 
 	def move(self, keys):
+		self.shotDelay -= 1
 		if(self.theta >= 360 or self.theta <= -360):
 				self.theta = 0
 		if(self.id == 1):
@@ -223,4 +224,8 @@ class Player():
 			self.renderShield(screen)
 		
 	def renderShield(self, screen):
-		pygame.draw.circle(screen, (0, (250 - self.shieldHealth), 255), (int(self.x), int(self.y)), self.shieldRadius, self.shieldWidth)
+		if(int(self.shieldHealth/50) == 0):
+			width = 1
+		else:
+			width = int(self.shieldHealth/50)
+		pygame.draw.circle(screen, (0, (250 - self.shieldHealth), 255), (int(self.x), int(self.y)), self.shieldRadius, width)

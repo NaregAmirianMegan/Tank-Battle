@@ -99,8 +99,9 @@ class Game:
 					quit()
 				elif(event.type == pygame.KEYDOWN):
 					for player in self.players:
-						if(player.shoot(event) != None): 
+						if(player.shoot(event) != None and player.shotDelay <= 0): 
 							self.shells.append(player.shoot(event))
+							player.shotDelay = 500
 
 			self.screen.fill(WHITE)
 

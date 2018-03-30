@@ -95,8 +95,8 @@ boundaryArray.append( Boundary((0, WINDOW_HEIGHT), (WINDOW_WIDTH, WINDOW_HEIGHT)
 boundaryArray.append( Boundary((WINDOW_WIDTH, 0), (WINDOW_WIDTH, WINDOW_HEIGHT), BLACK) )
 boundaryArray.append( Boundary((WINDOW_WIDTH/2, 0), (WINDOW_WIDTH/2, WINDOW_HEIGHT/2), BLACK) )
 
-playerArray.append( Player(300, 300, GREEN, 0, 1) )
-playerArray.append( Player(100, 300, RED, 0, 2) )
+playerArray.append( Player(100, 100, GREEN, 270, 1) )
+playerArray.append( Player(700, 100, RED, 270, 2) )
 
 game1 = Game(boundaryArray, playerArray, screen)
 
