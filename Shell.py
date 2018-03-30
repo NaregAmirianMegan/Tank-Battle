@@ -90,23 +90,13 @@ class Shell():
 				return False
 
 	def checkBounce(self, boundary):
-		if(boundary.a[0] == boundary.b[0]): 
-			if(boundary.a[1] > boundary.b[1]):
-				greaterY = boundary.a[1]
-				lesserY = boundary.b[1]
-			else:
-				lesserY = boundary.a[1]
-				greaterY = boundary.b[1]
-			if(int(self.xPos) == boundary.a[0] and greaterY >= self.yPos >= lesserY):
+		if(not boundary.isHorizontal): 
+			if(int(self.xPos) == boundary.xVal and boundary.yMax >= self.yPos >= boundary.yMin):
+				self.lifeTime -= 1
 				self.calcVerticalDeflectionAngle()
-		elif(boundary.a[1] == boundary.b[1]): 
-			if(boundary.a[0] > boundary.b[0]):
-				greaterX = boundary.a[0]
-				lesserX = boundary.b[0] 
-			else:
-				lesserX = boundary.a[0]
-				greaterX = boundary.b[0]
-			if(int(self.yPos) == boundary.a[1] and greaterX >= self.xPos >= lesserX):
+		else: 
+			if(int(self.yPos) == boundary.yVal and boundary.xMax >= self.xPos >= boundary.xMin):
+				self.lifeTime -= 1
 				self.calcHorizontalDeflectionAngle()
 
 	def move(self):

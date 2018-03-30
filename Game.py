@@ -127,32 +127,35 @@ def game_loop():
 	playerArray.append( Player(100, 300, RED, 0, 2) )
 
 	#construct map
-	boundaryArray.append( Boundary((700, 100), (700, 400), BLACK) )
-	boundaryArray.append( Boundary((100, 500), (400, 500), BLACK) )
-	boundaryArray.append( Boundary((100, 100), (400, 100), BLACK) )
+	boundaryArray.append( Boundary((0, 0), (0, WINDOW_HEIGHT), BLACK) )
+	boundaryArray.append( Boundary((0, 0), (WINDOW_WIDTH, 0), BLACK) )
+	boundaryArray.append( Boundary((0, WINDOW_HEIGHT), (WINDOW_WIDTH, WINDOW_HEIGHT), BLACK) )
+	boundaryArray.append( Boundary((WINDOW_WIDTH, 0), (WINDOW_WIDTH, WINDOW_HEIGHT), BLACK) )
+	boundaryArray.append( Boundary((WINDOW_WIDTH/2, 0), (WINDOW_WIDTH/2, WINDOW_HEIGHT/2), BLACK) )
+
 	
 
 	while(run_game):
 		keys = pygame.key.get_pressed()
+
 		for player in playerArray:
 			player.move(keys)
+			for boundary in boundaryArray:
+				player.detectCollision(boundary)
+				if(player.collideWithWall):
+					break
 
 		for shell in shellArray:
 			shell.move()
+			if(shell.lifeTime == 0):
+				shellArray.remove(shell)
 			for player in playerArray:
 				if(shell.checkHit(player)):
 					shellArray.remove(shell)
 
 		playerArray[0].checkCollision(playerArray[1])
 		playerArray[1].checkCollision(playerArray[0])
-
-		#TODO: fix boundary collision condition bug
-
-		for player in playerArray:
-			for boundary in boundaryArray:
-				player.detectCollision(boundary)
-				if(player.collideWithWall):
-					break
+			
 		for boundary in boundaryArray:
 			for shell in shellArray:
 				shell.checkBounce(boundary)
