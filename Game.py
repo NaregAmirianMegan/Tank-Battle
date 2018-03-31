@@ -5,6 +5,14 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLACK = (0, 0, 0)
 GREY = (211, 211, 211)
+WINDOW_HEIGHT = 600
+WINDOW_WIDTH = 800
+
+def mouse_on_box(xPos, yPos, width, height, mousePosition):
+	if(mousePosition[0] > xPos and mousePosition[0] < xPos+width):
+		if(mousePosition[1] > yPos and mousePosition[1] < yPos+height):
+			return True
+	return False
 
 def explosion_animation(x, y, screen, boundaryArray, playerArray, shellArray):
 	run_animation = True
@@ -34,14 +42,19 @@ def explosion_animation(x, y, screen, boundaryArray, playerArray, shellArray):
 
 		frameCount += 1
 
-def end_screen(winner, screen):
+def end_screen(currentScore, screen):
 	run_game = True
 
 	pygame.font.init()
 	myfont = pygame.font.SysFont('Comic Sans MS', 29)
+	clock = pygame.time.Clock()
 
-	endMatchText = ('PLAYER '+str(winner)+' WINS!!!')
-	endMatch = myfont.render(endMatchText, False, RED)
+	endMatchTextP1 = ('PLAYER ONE: '+str(currentScore[0]))
+	endMatchP1 = myfont.render(endMatchTextP1, False, RED)
+	endMatchTextP2 = ('PLAYER TWO: '+str(currentScore[1]))
+	endMatchP2 = myfont.render(endMatchTextP2, False, RED)
+	quitLabel = myfont.render('QUIT', False, WHITE)
+	startLabel = myfont.render('START?', False, WHITE)
 
 	while(run_game):
 
@@ -50,18 +63,45 @@ def end_screen(winner, screen):
 				pygame.quit()
 				quit()
 
-		screen.fill(BLACK)
-		screen.blit(endMatch, (300, 300))
-		pygame.display.update()
+				#TODO: fix rectangle
+		if(pygame.mouse.get_pressed()[0] == True):
+			if(mouse_on_box(WINDOW_WIDTH/4, WINDOW_HEIGHT-WINDOW_HEIGHT/3, 100, 50, pygame.mouse.get_pos())):
+				pygame.draw.rect(screen, RED, (WINDOW_WIDTH/4, WINDOW_HEIGHT-WINDOW_HEIGHT/3, 100, 50))
+				pygame.draw.rect(screen, GREY, (WINDOW_WIDTH-WINDOW_WIDTH/3, WINDOW_HEIGHT-WINDOW_HEIGHT/3, 100, 50))
+				pygame.display.update()
+				pygame.time.wait(50)
+				pygame.quit()
+				quit()
+			if(mouse_on_box(WINDOW_WIDTH-WINDOW_WIDTH/3, WINDOW_HEIGHT-WINDOW_HEIGHT/3, 100, 50, pygame.mouse.get_pos())):
+				pygame.draw.rect(screen, GREY, (WINDOW_WIDTH/4, WINDOW_HEIGHT-WINDOW_HEIGHT/3, 100, 50))
+				pygame.draw.rect(screen, GREEN, (WINDOW_WIDTH-WINDOW_WIDTH/3, WINDOW_HEIGHT-WINDOW_HEIGHT/3, 100, 50))
+				pygame.display.update()
+				pygame.time.wait(50)
+				break
+		else:
+			pygame.draw.rect(screen, 
+				GREY, (WINDOW_WIDTH/4, WINDOW_HEIGHT-WINDOW_HEIGHT/3, 100, 50))
+			pygame.draw.rect(screen, 
+				GREY, (WINDOW_WIDTH-WINDOW_WIDTH/3, 
+					WINDOW_HEIGHT-WINDOW_HEIGHT/3, 100, 50))
 
+		screen.fill(BLACK)
+		screen.blit(endMatchP1, (100, 300))
+		screen.blit(endMatchP2, (500, 300))
+		screen.blit(quitLabel, (WINDOW_WIDTH/4, WINDOW_HEIGHT-WINDOW_HEIGHT/3))
+		screen.blit(startLabel, (WINDOW_WIDTH-WINDOW_WIDTH/3, WINDOW_HEIGHT-WINDOW_HEIGHT/3))
+
+		pygame.display.update()
+		clock.tick(15)
 
 class Game:
 
-	def __init__(self, boundaryArray, playerArray, screen):
+	def __init__(self, boundaryArray, playerArray, screen, currentScore):
 		self.boundaries = boundaryArray
 		self.shells = []
 		self.players = playerArray
 		self.screen = screen
+		self.currentScore = currentScore
 
 	def run(self):
 		run_game = True
@@ -109,8 +149,10 @@ class Game:
 				if(player.health <= 0):
 					if(player.id == 1):
 						winner = 2
+						self.currentScore[1] = self.currentScore[1] + 1
 					else:
 						winner = 1
+						self.currentScore[0] = self.currentScore[0] + 1
 					self.players.remove(player)
 					explosion_animation(player.x, player.y, self.screen, self.boundaries, self.players, self.shells)
 					pygame.time.wait(500)
@@ -127,4 +169,5 @@ class Game:
 
 			pygame.display.update()
 
-		end_screen(winner, self.screen)
+		end_screen(self.currentScore, self.screen)
+		return self.currentScore

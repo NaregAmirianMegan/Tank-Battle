@@ -89,6 +89,31 @@ def game_menu():
 		pygame.display.update()
 		clock.tick(15)
 
+#options to quit or play again
+def final_screen(score):
+	run = True
+
+	header = myfont.render('WINNER: ', False, WHITE)
+	if(score[0] > score[1]):
+		winnerText = 'Player One'
+	else:
+		winnerText = 'Player Two'
+	winningPlayer = myfont.render(winnerText, False, WHITE)
+
+	while(run):
+		for event in pygame.event.get():
+			if(event.type == pygame.QUIT):
+				pygame.quit()
+				quit()
+
+		screen.fill(BLACK)
+
+		screen.blit(header, (350, 100))
+		screen.blit(winningPlayer, (350, 300))
+		pygame.display.update()
+
+
+
 boundaryArray.append( Boundary((0, 0), (0, WINDOW_HEIGHT), BLACK) )
 boundaryArray.append( Boundary((0, 0), (WINDOW_WIDTH, 0), BLACK) )
 boundaryArray.append( Boundary((0, WINDOW_HEIGHT), (WINDOW_WIDTH, WINDOW_HEIGHT), BLACK) )
@@ -98,8 +123,37 @@ boundaryArray.append( Boundary((WINDOW_WIDTH/2, 0), (WINDOW_WIDTH/2, WINDOW_HEIG
 playerArray.append( Player(100, 100, GREEN, 270, 1) )
 playerArray.append( Player(700, 100, RED, 270, 2) )
 
-game1 = Game(boundaryArray, playerArray, screen)
+game1 = Game(boundaryArray, playerArray, screen, [0, 0])
 
 game_menu()
 print("Game loaded.")
-game1.run()
+
+
+nextScore = game1.run()
+
+
+boundaryArray.append( Boundary((0, 500), (300, 500), BLACK) )
+boundaryArray.append( Boundary((500, 500), (800, 500), BLACK) )
+
+playerArray = []
+playerArray.append( Player(100, 100, GREEN, 270, 1) )
+playerArray.append( Player(700, 100, RED, 270, 2) )
+
+game2 = Game(boundaryArray, playerArray, screen, nextScore)
+
+nextScore = game2.run()
+
+
+boundaryArray.append( Boundary((0, 200), (200, 200), BLACK) )
+boundaryArray.append( Boundary((600, 200), (800, 200), BLACK) )
+
+playerArray = []
+playerArray.append( Player(100, 100, GREEN, 270, 1) )
+playerArray.append( Player(700, 100, RED, 270, 2) )
+
+game3 = Game(boundaryArray, playerArray, screen, nextScore)
+
+nextScore = game3.run()
+
+
+final_screen(nextScore)
