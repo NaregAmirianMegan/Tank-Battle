@@ -120,8 +120,8 @@ boundaryArray.append( Boundary((0, WINDOW_HEIGHT), (WINDOW_WIDTH, WINDOW_HEIGHT)
 boundaryArray.append( Boundary((WINDOW_WIDTH, 0), (WINDOW_WIDTH, WINDOW_HEIGHT), BLACK) )
 boundaryArray.append( Boundary((WINDOW_WIDTH/2, 0), (WINDOW_WIDTH/2, WINDOW_HEIGHT/2), BLACK) )
 
-playerArray.append( Player(100, 100, GREEN, 270, 1) )
-playerArray.append( Player(700, 100, RED, 270, 2) )
+playerArray.append( Player(100, 100, GREEN, 45, 1) )
+playerArray.append( Player(700, 100, RED, 135, 2) )
 
 game1 = Game(boundaryArray, playerArray, screen, [0, 0])
 
@@ -136,8 +136,8 @@ boundaryArray.append( Boundary((0, 500), (300, 500), BLACK) )
 boundaryArray.append( Boundary((500, 500), (800, 500), BLACK) )
 
 playerArray = []
-playerArray.append( Player(100, 100, GREEN, 270, 1) )
-playerArray.append( Player(700, 100, RED, 270, 2) )
+playerArray.append( Player(100, 100, GREEN, 45, 1) )
+playerArray.append( Player(700, 100, RED, 135, 2) )
 
 game2 = Game(boundaryArray, playerArray, screen, nextScore)
 
@@ -148,8 +148,8 @@ boundaryArray.append( Boundary((0, 200), (200, 200), BLACK) )
 boundaryArray.append( Boundary((600, 200), (800, 200), BLACK) )
 
 playerArray = []
-playerArray.append( Player(100, 100, GREEN, 270, 1) )
-playerArray.append( Player(700, 100, RED, 270, 2) )
+playerArray.append( Player(100, 100, GREEN, 45, 1) )
+playerArray.append( Player(700, 100, RED, 135, 2) )
 
 game3 = Game(boundaryArray, playerArray, screen, nextScore)
 
